@@ -26,8 +26,9 @@ def main(root):
     '''
     Iterate through each file in the repository and check a hash
     '''
+    root = os.path.abspath(root)
     answer = {
-        'name': os.path.basename(os.path.abspath(root))
+        'name': os.path.basename(root)
     }
 
     data = []
@@ -47,8 +48,10 @@ def main(root):
                     }
                 )
     answer['data'] = data
-    logging.info('Manifest file: %s' % json.dumps(answer, indent=4, sort_keys=True))
-    export_file = 'manifest.json'
+    logging.info('Manifest file: %s' %
+                 json.dumps(answer, indent=4, sort_keys=True))
+    # export the file to root
+    export_file = os.path.join(root, 'manifest.json')
     with open(export_file, 'w') as f:
         json.dump(data, f)
     logging.info('[%s] Manifest file created' % os.path.isfile(export_file))
