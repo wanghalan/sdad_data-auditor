@@ -53,7 +53,7 @@ def main(root):
     # export the file to root
     export_file = os.path.join(root, 'manifest.json')
     with open(export_file, 'w') as f:
-        json.dump(data, f)
+        json.dump(answer, f)
     logging.info('[%s] Manifest file created' % os.path.isfile(export_file))
 
 
