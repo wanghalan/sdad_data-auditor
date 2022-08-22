@@ -22,7 +22,7 @@ def make_website():
     pass
 
 
-def evaluate_folder(data, dirpath, prepend='https://raw.githubusercontent.com/uva-bi-sdad/'):
+def evaluate_folder(data, dirpath):
     '''
     Given a directory, add all file information into data
     Assume if it is under a distribution folder, to store the manifest for this data
@@ -44,7 +44,7 @@ def evaluate_folder(data, dirpath, prepend='https://raw.githubusercontent.com/uv
             )
 
 
-def main(root, prepend, test=False):
+def main(root, test=False):
     '''
     Iterate through each file in the repository and check a hash
     '''
@@ -59,7 +59,7 @@ def main(root, prepend, test=False):
         dirpath = os.path.join(root, file)
         if os.path.isdir(dirpath):
             logging.debug('%s is a related directory' % (dirpath))
-            evaluate_folder(data, dirpath, prepend)
+            evaluate_folder(data, dirpath)
 
     answer['data'] = data
     answer['count'] = len(data)
@@ -83,8 +83,6 @@ if __name__ == '__main__':
                         action=argparse.BooleanOptionalAction)
     parser.add_argument('-t', '--test',
                         action=argparse.BooleanOptionalAction)
-    parser.add_argument('-p', '--prepend', type=str,
-                        help='Raw github url to prepend')
 
     args = parser.parse_args()
     log_level = logging.INFO
@@ -93,14 +91,8 @@ if __name__ == '__main__':
 
     logging.basicConfig(format='%(levelname)s: %(message)s', level=log_level)
 
-    prepend = None
-    if args.prepend:
-        prepend = args.prepend
-    else:
-        prepend = 'https://raw.githubusercontent.com/uva-bi-sdad/'
-
     if not os.path.isdir(args.input_root):
         logging.info('%s is not a directory' % (args.input_root))
     else:
         logging.info('Auditing: %s' % os.path.abspath(args.input_root))
-        main(args.input_root, prepend, args.test)
+        main(args.input_root, args.test)
