@@ -37,7 +37,7 @@ def evaluate_folder(data, dirpath, prepend='https://raw.githubusercontent.com/uv
                 {
                     'name': path.name,
                     # Append the raw github location, add the repository name after, and then add the path under the repository
-                    'path': prepend + os.path.join(os.path.basename(os.path.abspath(args.input_root)), os.path.relpath(path)),
+                    'path': os.path.relpath(path),
                     'md5': get_md5(path),
                     'size': os.path.getsize(path),
                 }
