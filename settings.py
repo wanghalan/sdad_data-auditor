@@ -1,1 +1,1 @@
-FILE_EXTENSION_TO_AUDIT = ['xz', 'csv']
+FILE_EXTENSION_TO_MEASURE_INFO = ['xz', 'csv']

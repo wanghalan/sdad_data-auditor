@@ -17,12 +17,14 @@ def get_md5(filepath):
     return hashlib.md5(open(filepath, 'rb').read()).hexdigest()
 
 
-def evaluate_folder(data, dirpath):
+def evaluate_folder(data, answer, dirpath):
     '''
     Given a directory, add all file information into data
     Assume if it is under a distribution folder, to store the manifest for this data
     '''
     logging.debug('Evaluating folder: %s' % dirpath)
+
+    measure_not_found_count = 0
 
     for path in Path(dirpath).rglob('distribution/**/*'):
         logging.debug('\tEvaluating: %s' % path.name)
@@ -39,14 +41,16 @@ def evaluate_folder(data, dirpath):
 
             measure_data = None
             # Check if there is a manifest file. If so, then try to append the measure info
-            if path.name.split('.')[-1] in settings.FILE_EXTENSION_TO_AUDIT and 'measure_info.json' in os.listdir(parent_dir):
+            if path.name.split('.')[-1] in settings.FILE_EXTENSION_TO_MEASURE_INFO and 'measure_info.json' in os.listdir(parent_dir):
                 measure_data = search_measure_info(
                     path, os.path.join(parent_dir, 'measure_info.json'))
                 if measure_data is not None:
                     to_append['measure_info'] = measure_data
                 else:
                     to_append['measure_info'] = 'No match found'
+                    measure_not_found_count += 1
         data.append(to_append)
+        answer['measure_not_found'] += measure_not_found_count
 
 
 def search_measure_info(path, measure_info_path, cutoff=50):
@@ -69,7 +73,8 @@ def main(root, test=False):
     '''
     root = os.path.abspath(root)
     answer = {
-        'name': os.path.basename(root)
+        'name': os.path.basename(root),
+        'measure_not_found': 0,
     }
 
     data = []
@@ -78,7 +83,7 @@ def main(root, test=False):
         dirpath = os.path.join(root, file)
         if os.path.isdir(dirpath):
             logging.debug('%s is a related directory' % (dirpath))
-            evaluate_folder(data, dirpath)
+            evaluate_folder(data, answer, dirpath)
 
     answer['data'] = data
     answer['count'] = len(data)
