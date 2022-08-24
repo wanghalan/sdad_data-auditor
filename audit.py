@@ -5,6 +5,7 @@ import json
 import logging
 from pathlib import Path
 from fuzzywuzzy import fuzz, process
+import settings
 
 '''
 Given the path to a directory, generate a manifest file
@@ -38,7 +39,7 @@ def evaluate_folder(data, dirpath):
 
             measure_data = None
             # Check if there is a manifest file. If so, then try to append the measure info
-            if 'measure_info.json' in os.listdir(parent_dir):
+            if path.name.split('.')[-1] in settings.FILE_EXTENSION_TO_AUDIT and 'measure_info.json' in os.listdir(parent_dir):
                 measure_data = search_measure_info(
                     path, os.path.join(parent_dir, 'measure_info.json'))
                 if measure_data is not None:
@@ -46,6 +47,7 @@ def evaluate_folder(data, dirpath):
                 else:
                     to_append['measure_info'] = 'No match found'
         data.append(to_append)
+
 
 def search_measure_info(path, measure_info_path, cutoff=50):
     '''
