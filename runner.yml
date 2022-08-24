@@ -1,4 +1,4 @@
-name: Audit Data Repository
+name: Audit Data Repository # v0.0.1
 on: [push]
 jobs:
   book-keeping:
